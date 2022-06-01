@@ -42,7 +42,7 @@ class _HelpScreenState extends State<HelpScreen> {
                     height: 30,
                   ),
                   MaterialButton(
-                    onPressed: () => Get.to(() => HomeView()),
+                    onPressed: () => Get.offAll(() => HomeView()),
                     color: Colors.blue.withOpacity(0.8),
                     child: const Text(
                       "Skip",

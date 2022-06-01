@@ -18,6 +18,7 @@ class HomeView extends GetView<HomeController> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: true,
         appBar: AppBar(
           title: const Text('Weather'),
           centerTitle: true,
@@ -36,7 +37,9 @@ class HomeView extends GetView<HomeController> {
           ],
         ),
         body: Obx(
-          () => Column(
+          () => ListView(
+            physics: const BouncingScrollPhysics(),
+            shrinkWrap: true,
             children: [
               _controller.isLoading.value
                   ? Center(
@@ -163,6 +166,9 @@ class HomeView extends GetView<HomeController> {
                   ],
                 ),
               ),
+              const SizedBox(
+                height: 20,
+              )
             ],
           ),
         ),

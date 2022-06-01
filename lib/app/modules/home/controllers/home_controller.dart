@@ -1,5 +1,3 @@
-import 'dart:html';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -21,7 +19,7 @@ class HomeController extends GetxController {
   double? longitude;
   String? location;
   Position? position;
-  bool? serviceEnabled = false;
+  // bool? serviceEnabled = false;
   WeatherResponse? weatherResponse;
 
   RxBool isLoading = false.obs;
@@ -29,34 +27,36 @@ class HomeController extends GetxController {
   RxBool inputEmpty = false.obs;
 
   String errorText = "";
+  bool? locationEnabled;
 
   _determinePosition() async {
     isLoading.value = true;
     LocationPermission permission;
+
+    locationEnabled = await Geolocator.isLocationServiceEnabled();
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
-        serviceEnabled = false;
         retrieveWeatherData();
         return Future.error('Location permissions are denied');
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
-      serviceEnabled = false;
       retrieveWeatherData();
       return Future.error(
           'Location permissions are permanently denied, we cannot request permissions.');
     } else {
-      serviceEnabled = true;
-      position = await Geolocator.getCurrentPosition();
-      print(position);
-      latitude = position!.latitude;
-      longitude = position!.longitude;
-      //checks if any location is searched or not, and stores the location in sharedpreferences if searched previously
-      if (!sharedPreferencesManager.isKeyExists("locationSearched")!) {
-        sharedPreferencesManager.putString("latLong", "$latitude,$longitude");
+      if (locationEnabled!) {
+        position = await Geolocator.getCurrentPosition();
+        print(position);
+        latitude = position!.latitude;
+        longitude = position!.longitude;
+        //checks if any location is searched or not, and stores the location in sharedpreferences if searched previously
+        if (!sharedPreferencesManager.isKeyExists("locationSearched")!) {
+          sharedPreferencesManager.putString("latLong", "$latitude,$longitude");
+        }
       }
       retrieveWeatherData();
     }
@@ -64,7 +64,8 @@ class HomeController extends GetxController {
 
   Future<void> retrieveWeatherData() async {
     //if the location service is disabled, returns the weather data of default latitude and longitude defined in constants file
-    if (!serviceEnabled! && !sharedPreferencesManager.isKeyExists("latLong")!) {
+    if (!locationEnabled! &&
+        !sharedPreferencesManager.isKeyExists("latLong")!) {
       weatherResponse = await httpApi.retrieveWeatherData(defaultLatLong);
       if (weatherResponse != null) {
         degreesInC = weatherResponse!.current!.feelslikeC!;
