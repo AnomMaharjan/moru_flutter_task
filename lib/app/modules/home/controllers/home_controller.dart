@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -66,7 +68,9 @@ class HomeController extends GetxController {
     //if the location service is disabled, returns the weather data of default latitude and longitude defined in constants file
     if (!locationEnabled! &&
         !sharedPreferencesManager.isKeyExists("latLong")!) {
-      weatherResponse = await httpApi.retrieveWeatherData(defaultLatLong);
+      log("message");
+      weatherResponse = await httpApi
+          .retrieveWeatherData("$defaultLatitude,$defaultLongitude");
       if (weatherResponse != null) {
         degreesInC = weatherResponse!.current!.feelslikeC!;
         degreesInF = weatherResponse!.current!.feelslikeF!;
@@ -76,6 +80,8 @@ class HomeController extends GetxController {
         isLoading.value = false;
       }
     } else {
+      log("message 222");
+
       //if the location service is enabled, returns the weather data of the current location
       weatherResponse = await httpApi.retrieveWeatherData(
           "${sharedPreferencesManager.getString('latLong')}");

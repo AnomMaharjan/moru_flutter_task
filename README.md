@@ -1,4 +1,4 @@
-# moru
+# moru weather app
 
 A new Flutter project.
 

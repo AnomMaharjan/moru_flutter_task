@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:moru/constants/constants.dart';
 import 'package:moru/help_screen.dart';
 import 'package:moru/utils/size_helper.dart';
 import 'package:moru/widgets/location_error_widget.dart';
@@ -118,6 +119,13 @@ class HomeView extends GetView<HomeController> {
                                       BorderRadius.all(Radius.circular(8))),
                               hintText: "Search Location"),
                           controller: _controller.searchFieldController,
+                          validator: (val) {
+                            if (val!.isEmpty) {
+                              return "Location cannot be empty";
+                            } else {
+                              return null;
+                            }
+                          },
                         ),
                       ),
                     ),
@@ -136,23 +144,36 @@ class HomeView extends GetView<HomeController> {
                                 height: 45,
                                 color: Colors.blueAccent.withOpacity(0.7),
                                 onPressed: () {
-                                  if (_controller
-                                      .searchFieldController.text.isEmpty) {
-                                    _controller.searchLocation(
-                                        "${_controller.latitude},${_controller.longitude}");
-                                    _controller.sharedPreferencesManager.putString(
-                                        "latLong",
-                                        "${_controller.latitude},${_controller.longitude}");
+                                  if (_formKey.currentState!.validate()) {
+                                    if (_controller.searchFieldController.text
+                                            .trim() ==
+                                        "") {
+                                      if (_controller.locationEnabled!) {
+                                        _controller.searchLocation(
+                                            "${_controller.latitude},${_controller.longitude}");
+                                        _controller.sharedPreferencesManager
+                                            .putString("latLong",
+                                                "${_controller.latitude},${_controller.longitude}");
+                                      } else {
+                                        _controller.searchLocation(
+                                            "$defaultLatitude,$defaultLongitude");
+                                        _controller.sharedPreferencesManager
+                                            .putString("latLong",
+                                                "$defaultLatitude,$defaultLongitude");
+                                      }
+                                    } else {
+                                      _controller.searchLocation(_controller
+                                          .searchFieldController.text
+                                          .trim());
+                                      _controller.sharedPreferencesManager
+                                          .putString(
+                                              "latLong",
+                                              _controller
+                                                  .searchFieldController.text
+                                                  .trim());
+                                    }
                                   } else {
-                                    _controller.searchLocation(_controller
-                                        .searchFieldController.text
-                                        .trim());
-                                    _controller.sharedPreferencesManager
-                                        .putString(
-                                            "latLong",
-                                            _controller
-                                                .searchFieldController.text
-                                                .trim());
+                                    return;
                                   }
                                 },
                                 child: const Text(

@@ -5,14 +5,10 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:moru/api/api.dart';
 import 'package:moru/constants/constants.dart';
-import 'package:moru/injector/injector.dart';
 import 'package:moru/model/weather_response_model.dart';
 import 'package:http/http.dart' as http;
-import 'package:moru/storage/shared_preferences_manager.dart';
 
 class HttpApi extends Api {
-  final SharedPreferencesManager _sharedPreferencesManager =
-      locator<SharedPreferencesManager>();
   String? url;
 
   @override
@@ -21,6 +17,7 @@ class HttpApi extends Api {
     //if available, returns the weather data of the previously searched location else returns default latLong weather data defined on constants file
 
     url = "$baseURL&q=$latLong";
+    log(url.toString());
 
     try {
       final response = await http.get(Uri.parse(url!));
@@ -38,8 +35,11 @@ class HttpApi extends Api {
   @override
   Future<WeatherResponse?> searchLocation(String location) async {
     String url = "$baseURL&q=$location";
+    log(url.toString());
+
     try {
       final response = await http.get(Uri.parse(url));
+      log(response.body.toString());
       if (response.statusCode == 200) {
         return WeatherResponse.fromJson(jsonDecode(response.body));
       } else {

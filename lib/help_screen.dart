@@ -2,6 +2,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:moru/app/modules/home/views/home_view.dart';
+import 'package:moru/constants/constants.dart';
+import 'package:moru/injector/injector.dart';
+import 'package:moru/storage/shared_preferences_manager.dart';
 import 'package:moru/utils/size_helper.dart';
 
 class HelpScreen extends StatefulWidget {
@@ -15,6 +18,8 @@ class _HelpScreenState extends State<HelpScreen> {
   @override
   void initState() {
     Future.delayed(const Duration(seconds: 5), () => Get.to(() => HomeView()));
+    locator<SharedPreferencesManager>().isKeyExists("latLong")! ? null : locator<SharedPreferencesManager>()
+        .putString("latLong", "$defaultLatitude,$defaultLongitude");
     super.initState();
   }
 
@@ -35,7 +40,7 @@ class _HelpScreenState extends State<HelpScreen> {
                 children: [
                   const Text(
                     "We show\nweather for you",
-                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    style: TextStyle(fontSize: 36, fontWeight: FontWeight.bold),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(
