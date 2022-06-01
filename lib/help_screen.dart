@@ -1,6 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:moru/app/modules/home/views/home_view.dart';
+import 'package:moru/utils/size_helper.dart';
 
 class HelpScreen extends StatefulWidget {
   const HelpScreen({Key? key}) : super(key: key);
@@ -12,51 +14,39 @@ class HelpScreen extends StatefulWidget {
 class _HelpScreenState extends State<HelpScreen> {
   @override
   void initState() {
+    Future.delayed(const Duration(seconds: 5), () => Get.to(() => HomeView()));
     super.initState();
-    Future.delayed(
-        const Duration(seconds: 5),
-        () => Navigator.of(context)
-            .push(MaterialPageRoute(builder: (context) => HomeView())));
   }
 
   @override
   Widget build(BuildContext context) {
-    var height = MediaQuery.of(context).size.height;
-
     return Scaffold(
       body: Stack(
         children: [
-          CachedNetworkImage(
-            imageUrl:
-                "https://www.vhv.rs/dpng/d/427-4270068_gold-retro-decorative-frame-png-free-download-transparent.png",
-
-            height: height,
+          Image(
+            image: const AssetImage("assets/bg.png"),
+            height: displayHeight(context),
             fit: BoxFit.fitHeight,
           ),
-          // Image.network(
-          //   "https://www.vhv.rs/dpng/d/427-4270068_gold-retro-decorative-frame-png-free-download-transparent.png",
-          //   height: height,
-          //   fit: BoxFit.fitHeight,
-          // ),
           Center(
             child: Padding(
-              padding: EdgeInsets.only(top: height * 0.5),
+              padding: EdgeInsets.only(top: displayHeight(context) * 0.45),
               child: Column(
                 children: [
                   const Text(
-                    "We show weather for you",
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    "We show\nweather for you",
+                    style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+                    textAlign: TextAlign.center,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   MaterialButton(
-                    onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => HomeView())),
+                    onPressed: () => Get.to(() => HomeView()),
                     color: Colors.blue.withOpacity(0.8),
-                    child: Text(
+                    child: const Text(
                       "Skip",
-                      style: TextStyle(fontSize: 20),
+                      style: TextStyle(fontSize: 20, color: Colors.white),
                     ),
                   )
                 ],
